@@ -314,6 +314,9 @@ const baseHtmlTemplate = `
                                 <option value="ge_10">Thay trang phục</option>
                                 <option value="ge_14">Tách trang phục</option>
                                 <option value="ge_15">Trích xuất hình ảnh</option>
+                                <!-- START NEW OPTION -->
+                                <option value="render_architecture">Render kiến trúc</option>
+                                <!-- END NEW OPTION -->
                                 <option value="ge_17">Phong cách ảnh vector</option>
                                 <option value="ge_11">Ảnh hoạt hình Ghibli</option>
                                 <option value="ge_18">Ảnh 3D chibi</option>
@@ -644,7 +647,10 @@ const baseHtmlTemplate = `
             'ge_12': 'https://res.cloudinary.com/dzfuqyqoq/image/upload/v1760521288/anh_sang-min_bsqpwk.gif',
             'id_photo': 'https://res.cloudinary.com/dzfuqyqoq/image/upload/v1760321242/anh_the-min_hncm4b.gif',
             'face_swap': 'https://res.cloudinary.com/dzfuqyqoq/image/upload/v1760321276/face_swap-01_qsjs7r.jpg',
-            'ge_30': 'https://res.cloudinary.com/dzfuqyqoq/image/upload/v1759650928/vien_vang-min_pdenyl.gif'
+            'ge_30': 'https://res.cloudinary.com/dzfuqyqoq/image/upload/v1759650928/vien_vang-min_pdenyl.gif',
+            // START NEW PREVIEW IMAGE
+            'render_architecture': 'https://res.cloudinary.com/dzfuqyqoq/image/upload/v1761291518/gif-1_1.5s_80p-min_up_xr8xac.gif'
+            // END NEW PREVIEW IMAGE
         };
 
         // --- UI LOGIC (NEW NAVIGATION) ---
@@ -917,7 +923,9 @@ const baseHtmlTemplate = `
             const promptText = promptInput.value.trim();
             const keepLayout = keepLayoutCheckbox.checked;
 
-            const imageRequiredModes = ['removebg', 'mask', 'upscale', 'flux_upscale', 'light_shadow', 'change_bg', 'ecommerce_process', 'face_swap', 'id_photo'];
+            // START UPDATED ARRAY
+            const imageRequiredModes = ['removebg', 'mask', 'upscale', 'flux_upscale', 'light_shadow', 'change_bg', 'ecommerce_process', 'face_swap', 'id_photo', 'render_architecture'];
+            // END UPDATED ARRAY
             if (selectedMode.startsWith('ge_')) imageRequiredModes.push(selectedMode);
             
             if (selectedMode === 'qwen' && qwenReferenceFile && !uploadedImageFile) { errorMessage.textContent = 'Chức năng này yêu cầu cả ảnh chính và ảnh tham chiếu!'; setTimeout(() => errorMessage.textContent = '', 3000); return; }
@@ -1045,6 +1053,25 @@ const baseHtmlTemplate = `
                             break;
                         case 'change_bg': if (referenceBgFile && referenceBgUrlForApi) { webappId = "1961706336507641857"; nodeInfoList = [{ nodeId: "49", fieldName: "image", fieldValue: imageUrlForApi }, { nodeId: "245", fieldName: "image", fieldValue: referenceBgUrlForApi }]; } else { webappId = "1956669205624053761"; nodeInfoList = [{ nodeId: "41", fieldName: "image", fieldValue: imageUrlForApi }, { nodeId: "32", fieldName: "value", fieldValue: "16" }, { nodeId: "33", fieldName: "text", fieldValue: promptText }]; } break;
                         case 'light_shadow': webappId = "1960150976252555265"; nodeInfoList = [{ nodeId: "47", fieldName: "image", fieldValue: imageUrlForApi }]; break;
+                        // START NEW CASE
+                        case 'render_architecture':
+                            webappId = "1980849016827236354";
+                            nodeInfoList = [
+                                {
+                                    "nodeId": "94",
+                                    "fieldName": "image",
+                                    "fieldValue": imageUrlForApi,
+                                    "description": "image"
+                                },
+                                {
+                                    "nodeId": "139",
+                                    "fieldName": "text",
+                                    "fieldValue": promptText,
+                                    "description": "text"
+                                }
+                            ];
+                            break;
+                        // END NEW CASE
                     }
                 }
                 const runPayload = { webappId, apiKey: API_KEY, nodeInfoList };
@@ -1471,6 +1498,9 @@ const translations = {
     '>Thay trang phục<': '>Change Clothes<',
     '>Tách trang phục<': '>Extract Clothes<',
     '>Trích xuất hình ảnh<': '>Image Extraction<',
+    // START NEW TRANSLATION
+    '>Render kiến trúc<': '>Architectural Render<',
+    // END NEW TRANSLATION
     '>Phong cách ảnh vector<': '>Vector Style<',
     '>Ảnh hoạt hình Ghibli<': '>Ghibli Anime Style<',
     '>Ảnh 3D chibi<': '>3D Chibi Style<',
